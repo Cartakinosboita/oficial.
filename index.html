@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Tu carta Kinos</title>
+<link rel="icon" href="kinos.jpg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --red:#a32d28;
+  --black:#fffefe;
+  --dark:#000;
+  --white:#0f0f0f;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:'Poppins',Arial,sans-serif;
+  background:var(--black);
+  color:var(--white);
+}
+
+/* ===== HERO HEADER ===== */
+header{
+  position:relative;
+  height:320px;
+  overflow:hidden;
+  display:flex;
+  align-items:flex-end;
+  padding:25px;
+}
+
+header img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+header::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    to top,
+    rgba(0,0,0,.9),
+    rgba(225,6,0,.25)
+  );
+}
+
+header h1, header p{
+  position:relative;
+  z-index:2;
+}
+
+header h1{
+  color:var(--red);
+  letter-spacing:4px;
+  font-size:30px;
+  font-weight:900;
+}
+
+header p{
+  font-size:14px;
+  opacity:.95;
+}
+
+/* ===== MENU ===== */
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:25px 20px;
+}
+
+details{
+  background:linear-gradient(145deg,#d3d3d3,#979797);
+  border-radius:18px;
+  margin-bottom:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.6);
+}
+
+summary{
+  padding:20px;
+  font-size:18px;
+  color:var(--red);
+  cursor:pointer;
+  font-weight:700;
+}
+
+summary::-webkit-details-marker{display:none}
+
+/* ===== ITEMS ===== */
+.menu-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:15px;
+  padding:14px 20px;
+  border-top:1px solid #222;
+}
+
+.menu-item span:first-child{
+  font-weight:700;
+}
+
+.ingredients{
+  font-size:13px;
+  color:#181818;
+  margin-top:4px;
+}
+
+/* ===== PRECIOS ===== */
+.price{
+  color:var(--red);
+  font-weight:700;
+  text-align:right;
+}
+
+.price small{
+  display:block;
+  font-size:11px;
+  color:#080808;
+}
+
+/* ===== BOTONES ===== */
+.add-btn{
+  margin-top:6px;
+  padding:6px 12px;
+  font-size:12px;
+  background:#000;
+  border:1px solid #333;
+  color:var(--red);
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* ===== PANEL PEDIDO ===== */
+#order-panel{
+  position:fixed;
+  bottom:18px;
+  right:18px;
+  width:300px;
+  background:linear-gradient(145deg,#6e0a0a,#929292);
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 15px 40px rgba(0,0,0,.9);
+  z-index:999;
+}
+
+#order-panel h3{
+  text-align:center;
+  color:var(--red);
+  margin:0 0 10px;
+}
+
+#order-list{
+  list-style:none;
+  padding:0;
+  margin:0;
+  max-height:180px;
+  overflow-y:auto;
+}
+
+#order-list li{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  margin-bottom:6px;
+}
+
+/* ===== TOTAL ===== */
+.order-total{
+  text-align:right;
+  margin:10px 0;
+  color:var(--black);
+  font-weight:700;
+}
+
+/* ===== BOTÓN ENVIAR ===== */
+.order-btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:14px;
+  background:var(--red);
+  color:#fff;
+  font-weight:800;
+  cursor:pointer;
+}
+
+/* ===== INPUTS ===== */
+#order-panel textarea,
+#order-panel select{
+  width:100%;
+  margin-top:10px;
+  padding:10px;
+  background:#000;
+  border:1px solid #333;
+  color:#fff;
+  border-radius:10px;
+  font-size:13px;
+}
+
+/* ===== ELIMINAR ===== */
+.remove-btn{
+  background:none;
+  border:none;
+  color:#ff4d4d;
+  font-size:14px;
+  cursor:pointer;
+}
+
+/* ===== PANEL DESLIZABLE ===== */
+#order-panel.collapsed{
+  transform:translateY(calc(100% - 48px));
+}
+
+#order-panel.open{
+  transform:translateY(0);
+}
+
+.order-handle{
+  text-align:center;
+  padding:12px;
+  font-weight:700;
+  color:var(--white);
+  cursor:pointer;
+  background:var(--red);
+  border-radius:18px 18px 0 0;
+}
+
+.order-content{
+  padding:14px 16px 20px;
+  max-height:75vh;
+  overflow-y:auto;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px){
+
+  header{
+    height:260px;
+    padding:20px;
+  }
+
+  header h1{
+    font-size:22px;
+    letter-spacing:3px;
+  }
+
+  header p{
+    font-size:13px;
+  }
+
+  .menu-item{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:8px;
+  }
+
+  .price{
+    align-self:flex-end;
+    text-align:right;
+  }
+
+  .ingredients{
+    font-size:12px;
+  }
+
+  .add-btn{
+    width:100%;
+    padding:10px;
+    font-size:13px;
+  }
+
+  #order-panel{
+    border-radius:18px 18px 0 0;
+  }
+
+  .order-content{
+    padding-bottom:25px;
+  }
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+  <img src="portada.jpg" alt="Kinos">
+  <div>
+    <h1>KINOS-BOITA</h1>
+    <p>Hamburguesas · Perros · Parrilla · Domicilios</p>
+  </div>
+</header>
+
+<div class="container" id="menu">
+ <!-- HAMBURGUESAS -->
+<details open>
+  <summary>🍔 Hamburguesas</summary>
+
+  <div class="menu-item">
+    <span>Sencilla Kinos</span>
+    <div class="ingredients">
+  125gr de carne, pan bimbo, queso, cebolla, tomate, lechuga,salsas.
+</div>
+
+    <span class="price">
+      <span class="price-normal">$14.800</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $22.700
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>Chiken Apanado Kinos</span>
+    <div class="ingredients">125gr de pollo apanado, pan bimbo, queso, cebolla, tomate, lechuga, salsas.</div>
+    <span class="price">
+      <span class="price-normal">$15.200</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $23.100
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>Pig Kinos</span>
+    <div class="ingredients">125gr de cerdo, pan bimbo, queso, cebolla, tomate, lechuga, salsas.</div>
+    <span class="price">
+      <span class="price-normal">$15.500</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $23.400
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>Chiken Pechuga Kinos</span>
+    <div class="ingredients">125gr de pollo, pan bimbo, queso, cebolla, tomate, lechuga, salsas.</div>
+    <span class="price">
+      <span class="price-normal">$15.500</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $23.400
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>Bacon Kinos</span>
+    <div class="ingredients">125gr de carne, pan bimbo, queso,tocino, cebolla, tomate, lechuga, salsas.</div>
+    <span class="price">
+      <span class="price-normal">$17.400</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $25.300
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>Tropical Kinos</span>
+    <div class="ingredients">125gr de carne, pan bimbo, queso, lechuga, una rodaja de piña caramelizada.</div>
+    <span class="price">
+      <span class="price-normal">$17.100</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $25.000
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>Champiñones Kinos</span>
+    <div class="ingredients">125gr de carne, pan bimbo, queso, cebolla griyet, champiñones, queso crema, salsas, tomate, lechuga, queso.</div>
+    <span class="price">
+      <span class="price-normal">$17.800</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $25.700
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>Criolla Kinos</span>
+    <div class="ingredients">125gr de carne, pan bimbo, huevo frito, cebolla, tomate, lechuga, queso, salsas.</div>
+    <span class="price">
+      <span class="price-normal">$17.800</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $25.700
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>Campesina Kinos</span>
+    <div class="ingredients">125gr de carne, pan bimbo, maiz tierno, queso, tomate, cebolla, lechuga, salsas.</div>
+    <span class="price">
+      <span class="price-normal">$17.800</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $25.700
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>Onion Kinos</span>
+    <div class="ingredients">125gr de carne, pan bimbo, queso, tomate, lechuga, 3 aros de cebolla, salsas.</div>
+    <span class="price">
+      <span class="price-normal">$17.900</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $25.800
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>Mexicana Kinos</span>
+    <div class="ingredients">125gr de carne, pan bimbo, frijol, jalapeños, cebolla griyet, lechuga, tomate, guacamole, queso, papa chips, salsas. </div>
+    <span class="price">
+      <span class="price-normal">$17.900</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $25.800
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>  <main>Callejera Kinos</main></span>
+    <div class="ingredients">125gr de carne, pan bimbo, platano, cebolla,tomate, lechuga, queso, guacamole, papa chips, salsas.</div>
+    <span class="price">
+      <span class="price-normal">$17.900</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $26.300
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>Ranchera Kinos</span>
+    <div class="ingredients">125gr de carne, pan bimbo, chorizo santa rosano, cebolla griyet, tomate, lechuga, guacamole, papa chhips, salsas. </div>
+    <span class="price">
+      <span class="price-normal">$19.900</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $27.800
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>Doble Kinos</span>
+    <div class="ingredients">doble carne de res 125gr, pan bimbo, cebolla, tomate, lechuga, doble queso, salsas.</div>
+    <span class="price">
+      <span class="price-normal">$19.900</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $27.800
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>Mixta Kinos</span>
+    <div class="ingredients">125gr de carne, 125gr de pollo apanado o pechuga de pollo, pan bimbo, cebolla, tomate, lechuga, doble queso, salsas.</div>
+    <span class="price">
+      <span class="price-normal">$19.900</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $27.800
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>D`kch Kinos</span>
+    <div class="ingredients">doble carne de res 125gr, pan bimbo, doble queso, cebolla, tomate, lechuga, pepinillos, tocineta, salsas.</div>
+    <span class="price">
+      <span class="price-normal">$24.000</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $31.900
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>Super Kinos</span>
+    <div class="ingredients">doble carne de res 125gr, pan bimbo, tocineta, doble queso,3 aros de cebolla, tomate, lechuga, doble queso, salsas.</div>
+    <span class="price">
+      <span class="price-normal">$24.500</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $32.400
+      </span>
+    </span>
+  </div>
+  <div class="menu-item">
+    <span>Trifasica Kinos</span>
+    <div class="ingredients">125gr de carne de res, 125gr de cerdo, 125gr de pollo apanado, pan bimbo, triple queso, cebolla, tomate, lechuga, salsas. </div>
+    <span class="price">
+      <span class="price-normal">$25.200</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $33.100
+      </span>
+    </span>
+  </div>
+
+</details>
+
+
+<!-- PERROS -->
+<details>
+  <summary>🌭 Perros Calientes</summary>
+
+  <div class="menu-item">
+    <span>Hot Dog Sencillo</span>
+    <div class="ingredients">Salchicha americana, pan bimbo, cebolla, doble queso, papas chips, salsas.</div>
+    <span class="price">
+      <span class="price-normal">$12.500</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $20.400
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>Hot Dog Tropical</span>
+    <div class="ingredients">Salchicha americana, pan bimbo, piña en trozos acaramelada, doble queso, papa chips, salsas.</div>
+    <span class="price">
+      <span class="price-normal">$13.900</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $21.800
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>Hot Dog Ranchero</span>
+    <div class="ingredients">Chorizo santa rosano, pan bimbo, cebolla, guacamole, papa chips, doble queso, salsas.</div>
+    <span class="price">
+      <span class="price-normal">$13.900</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $21.800
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>Hot Dog Champiñones</span>
+    <div class="ingredients">Salchicha americana, pan bimbo, champiñones, cebolla griyet, doble queso, papas chips, salsas.</div>
+    <span class="price">
+      <span class="price-normal">$15.900</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $23.800
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>Hot Dog Bacon</span>
+    <div class="ingredients">Salchicha americana, pan bimbo, doble tocineta, cebolla, doble queso, papa chips, salsas.</div>
+    <span class="price">
+      <span class="price-normal">$14.500</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $22.400
+      </span>
+    </span>
+  </div>
+
+
+  <div class="menu-item">
+    <span>Hot Dog Callejero</span>
+    <div class="ingredients">Salchicha americana, pan bimbo, platano, cebolla, guacamole,doble queso, papa chips, salsas.</div>
+    <span class="price">
+      <span class="price-normal">$15.900</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $23.800
+      </span>
+    </span>
+  </div>
+
+  <div class="menu-item">
+    <span>Hot Dog Campesino</span>
+    <div class="ingredients">Salchicha americana, pan bimbo, maiz tierno, cebolla griyet, doble queso, papas chips, salsas.</div>
+    <span class="price">
+      <span class="price-normal">$13.900</span>
+      <span class="price-combo">
+        <small>Combo</small>
+        $21.800
+      </span>
+    </span>
+  </div>
+
+
+</details>
+
+
+<!-- PARRILLA -->
+<details>
+  <summary>🔥 Parrilla</summary>
+  <div class="menu-item"><span>Churrasco</span><span class="price">$32.000</span></div>
+  <div class="ingredients">350gr de carne, acompañado de papa a la francesa, criolla o en cascos, y dos croquetas de yuca.</div>
+  <div class="menu-item"><span>Pechuga</span><span class="price">$29.000</span></div>
+  <div class="ingredients">350 gr de pechuga de pollo, acompañada de papa a la francesa, criolla o en cascos, y dos croquetas de yuca.</div>
+  <div class="menu-item"><span>Costillas De Cerdo BBQ</span><span class="price">$29.000</span></div>
+  <div class="ingredients">400gr de costillas de cerdo, acompañado de papa a la francesa, criolla o en cascos, y dos croquetas de yuca.</div>
+</details>
+
+<!-- ADICIONES -->
+<details>
+  <summary>➕ Adiciones</summary>
+  <div class="menu-item"><span>Tocineta</span><span class="price">$4.700</span></div>
+  <div class="menu-item"><span>Aros de cebolla X6</span><span class="price">$7.500</span></div>
+  <div class="menu-item"><span>Papa francesa</span><span class="price">$6.000</span></div>
+  <div class="menu-item"><span>Papa Casco</span><span class="price">$6.000</span></div>
+  <div class="menu-item"><span>Papa criolla</span><span class="price">$6.000</span></div>
+  <div class="menu-item"><span>Queso x2</span><span class="price">$2.500</span></div>
+  <div class="menu-item"><span>Piña</span><span class="price">$2.500</span></div>
+  <div class="menu-item"><span>Huevo</span><span class="price">$2.000</span></div>
+  <div class="menu-item"><span>Porcion De Yuca X3</span><span class="price">$3.700</span></div>
+  <div class="menu-item"><span>Platano</span><span class="price">$4.200</span></div>
+  <div class="menu-item"><span>Carne</span><span class="price">$8.000</span></div>
+  <div class="menu-item"><span>Pollo Apanado</span><span class="price">$8.000</span></div>
+  <div class="menu-item"><span>Pepinillo</span><span class="price">$3.000</span></div>
+  <div class="menu-item"><span>Jalapeño</span><span class="price">$3.000</span></div>
+  <div class="menu-item"><span>Chorizo</span><span class="price">$4.900</span></div>
+  <div class="menu-item"><span>Maiz</span><span class="price">$4.000</span></div>
+  <div class="menu-item"><span>Frijol</span><span class="price">$4.000</span></div>
+  <div class="menu-item"><span>Champiñones</span><span class="price">$4.000</span></div>
+</details>
+
+<!-- OTROS -->
+<details>
+  <summary>🍟 Otros</summary>
+  <div class="menu-item"><span>Empanadas</span><span class="price">$2.800</span></div>
+  <div class="menu-item"><span>Salchipapa Sencilla</span><span class="price">$9.900</span></div>
+<div class="ingredients">200gr de papa francesa acompañadas de salchicha.</div>
+  <div class="menu-item"><span>Salchipapa Especial</span><span class="price">$13.900</span></div>
+  <div class="ingredients">200gr de papa francesa acompañada de salchicha doble tocineta y doble queso.</div>
+  <div class="menu-item"><span>Choripapa</span><span class="price">$11.900</span></div>
+  <div class="ingredients">200gr de papa francesa acompañada de chorizo santa rosano y ensalada.</div>
+  <div class="menu-item"><span>Nugets X10</span><span class="price">$11.500</span></div>
+  <div class="menu-item"><span>Nugets Combo</span><span class="price">$13.500</span></div>
+  <div class="ingredients">200gr de papa francesa acompañada de 5 deliciosos nugets de pollo y gaseosa o jugo.</div>
+</details>
+
+<!-- BEBIDAS -->
+<details>
+  <summary>🥤 Bebidas</summary>
+  <div class="menu-item"><span>Gaseosa 400ml</span><span class="price">$4.000</span></div>
+  <div class="menu-item"><span>te</span><span class="price">$4.000</span></div>
+  <div class="menu-item"><span>Hit</span><span class="price">$4.000</span></div>
+  <div class="menu-item"><span>Agua Con Gas</span><span class="price">$3.000</span></div>
+  <div class="menu-item"><span>Agua Normal</span><span class="price">$3.000</span></div>
+  <div class="menu-item"><span>Gaseosa 1.5</span><span class="price">$8.500</span></div>
+  <div class="menu-item"><span>Cerveza</span><span class="price">$5.000</span></div>
+</details>
+
+<!-- JUGOS -->
+<details>
+  <summary>🧃 Jugos Naturales</summary>
+  <div class="menu-item"><span>Jugo En Agua</span><span class="price">$7.000</span></div>
+  <div class="menu-item"><span>Jugo En Leche</span><span class="price">$7.500</span></div>
+  <div class="menu-item"><span>Limonada Natural</span><span class="price">$7.000</span></div>
+  <div class="menu-item"><span>Limonada De Coco</span><span class="price">$9.000</span></div>
+  <div class="menu-item"><span>Cerezada</span><span class="price">$9.000</span></div>
+</details>
+
+<details>
+  <summary>🥤Cambios De Bebidas En El Combo</summary>
+  <div class="menu-item"><span>Limonada Natural</span><span class="price">+$4.000</span></div>
+  <div class="menu-item"><span>Jugo En Agua</span><span class="price">+$4.000</span></div>
+  <div class="menu-item"><span>Jugo En Leche</span><span class="price">+$5.000</span></div>
+  <div class="menu-item"><span>Limonada Hierba Buena</span><span class="price">+$5.000</span></div>
+  <div class="menu-item"><span>Limonada De Coco</span><span class="price">+$6.000</span></div>
+  <div class="menu-item"><span>Cerezada</span><span class="price">+$6.000</span></div>
+  <div class="menu-item"><span>Cerveza</span><span class="price">+$3.000</span></div>
+</details>
+
+<section id="info">
+  <h2>📍 Dirección</h2>
+  <p>Calle 45 Sur 72P-39<br>Bogotá - Colombia</p>
+
+  <h2>🛵 Domicilios</h2>
+  <p>📞 310 7611 594</p>
+</section>
+
+<!-- PANEL PEDIDO -->
+<!-- PANEL PEDIDO DESLIZABLE -->
+<div id="order-panel" class="collapsed">
+  <div class="order-handle" onclick="toggleOrder()">
+    🛒 Ver pedido
+  </div>
+
+  <div class="order-content">
+    <ul id="order-list"></ul>
+
+    <div class="order-total">
+      Total: $<span id="order-total">0</span>
+    </div>
+
+    <textarea id="notes"
+  placeholder="📝 Notas del pedido (ej: sin cebolla, con todo, poco picante)"
+  rows="3"></textarea>
+
+  <textarea id="Direccion"
+  placeholder="Ingresa tu direccion o un punto de refencia."
+  rows="3"></textarea>
+      <button class="add-btn" onclick="getLocation()">
+  📍 Usar mi ubicación exacta
+</button>
+
+
+    <select id="payment">
+      <option value="">💳 Método de pago</option>
+      <option value="Efectivo">💵 Efectivo</option>
+      <option value="Qr">💳 Qr</option>
+    </select>
+
+    <!-- ===== DATOS APARTAMENTO ===== -->
+<div id="apto-section" style="margin-top:12px">
+  <label style="font-size:13px;font-weight:700;color:#fff">
+    🏢 ¿Vives en apartamento?
+  </label>
+
+  <select id="viveApto" style="margin-top:6px">
+    <option value="">Selecciona una opción</option>
+    <option value="No">No</option>
+    <option value="Sí">Sí</option>
+  </select>
+
+  <div id="aptoDatos" style="display:none;margin-top:10px">
+    <input id="conjunto" placeholder="Conjunto / Unidad"
+      style="width:100%;margin-bottom:6px;padding:8px;border-radius:8px;border:1px solid #333;background:#000;color:#fff">
+
+    <input id="torre" placeholder="Torre / Bloque"
+      style="width:100%;margin-bottom:6px;padding:8px;border-radius:8px;border:1px solid #333;background:#000;color:#fff">
+
+    <input id="aptoNumero" placeholder="Número de apartamento"
+      style="width:100%;padding:8px;border-radius:8px;border:1px solid #333;background:#000;color:#fff">
+  </div>
+</div>
+
+
+    <button class="order-btn" onclick="sendWhatsApp()">
+      📲 Enviar pedido
+    </button>
+  </div>
+</div>
+
+
+
+<script>
+function sendWhatsApp(){
+  if(order.length === 0){
+    alert('Agrega productos al pedido');
+    return;
+  }
+
+  if(!userLocationLink){
+    alert('Debes presionar el botón de 📍 Ubicación exacta antes de enviar el pedido');
+    return;
+  }
+
+  const payment   = document.getElementById('payment')?.value;
+  const notes     = document.getElementById('notes')?.value.trim();
+  const direccion = document.getElementById('Direccion')?.value.trim();
+
+  if(!direccion){
+    alert('Debes ingresar la dirección o un punto de referencia');
+    return;
+  }
+
+  const vive = document.getElementById('viveApto')?.value;
+  if(!vive){
+    alert('Debes indicar si vives en apartamento');
+    return;
+  }
+
+  let aptoInfo = '';
+
+  if(vive === 'Sí'){
+    const conjunto = document.getElementById('conjunto')?.value.trim();
+    const torre    = document.getElementById('torre')?.value.trim();
+    const apto     = document.getElementById('aptoNumero')?.value.trim();
+
+    if(!conjunto || !torre || !apto){
+      alert('Debes completar conjunto, torre y apartamento');
+      return;
+    }
+
+    aptoInfo =
+`🏢 *Apartamento*
+• Conjunto: ${conjunto}
+• Torre: ${torre}
+• Apto: ${apto}`;
+  } else {
+    aptoInfo = `🏠 *Casa*`;
+  }
+
+  // 🔥 MENSAJE LIMPIO (SIN %0A)
+  let message = `🍔 *Pedido KINOS-BOITA*
+
+🧾 *Productos:*
+`;
+
+  order.forEach(item=>{
+    message += `• ${item.name} - $${item.price.toLocaleString()}\n`;
+  });
+
+  message += `
+🚚 *Domicilio:* $${deliveryCost.toLocaleString()}
+💰 *Total:* $${(total + deliveryCost).toLocaleString()}
+💳 *Pago:* ${payment}
+📍 *Dirección:* ${direccion}
+`;
+
+  if(notes){
+    message += `📝 *Notas:* ${notes}\n`;
+  }
+
+  message += `
+${aptoInfo}
+`;
+
+  if(userLocationLink){
+    message += `📌 *Ubicación:* ${userLocationLink}`;
+  }
+
+  // ✅ CODIFICACIÓN CORRECTA
+  const encodedMessage = encodeURIComponent(message);
+
+  const phone = '573107611594';
+  window.open(`https://wa.me/${phone}?text=${encodedMessage}`, '_blank');
+}
+</script>
+
+
+
+
+
+</body>
+</html>
